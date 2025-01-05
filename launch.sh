@@ -29,7 +29,9 @@ if ! [[ -f "Server-Files-$SERVER_VERSION.zip" ]]; then
 	curl -Lo forge-${FORGE_VERSION}-installer.jar https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.1-$FORGE_VERSION/forge-1.20.1-$FORGE_VERSION-installer.jar
 	java -jar forge-${FORGE_VERSION}-installer.jar --installServer
 fi
-
+if [[ -n "$LEVEL" ]]; then
+    sed -i "/level-name\s*=/ c level-name=$LEVEL" /data/server.properties
+fi
 if [[ -n "$JVM_OPTS" ]]; then
 	sed -i '/-Xm[s,x]/d' user_jvm_args.txt
 	for j in ${JVM_OPTS}; do sed -i '$a\'$j'' user_jvm_args.txt; done
@@ -40,6 +42,7 @@ fi
 if [[ -n "$ENABLE_WHITELIST" ]]; then
     sed -i "s/white-list=.*/white-list=$ENABLE_WHITELIST/" /data/server.properties
 fi
+
 [[ ! -f whitelist.json ]] && echo "[]" > whitelist.json
 IFS=',' read -ra USERS <<< "$WHITELIST_USERS"
 for raw_username in "${USERS[@]}"; do
@@ -62,6 +65,7 @@ for raw_username in "${USERS[@]}"; do
 		echo "Whitelist: Failed to fetch UUID for $username."
 	fi
 done
+
 [[ ! -f ops.json ]] && echo "[]" > ops.json
 IFS=',' read -ra OPS <<< "$OP_USERS"
 for raw_username in "${OPS[@]}"; do
