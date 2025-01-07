@@ -29,9 +29,7 @@ if ! [[ -f "Server-Files-$SERVER_VERSION.zip" ]]; then
 	curl -Lo forge-${FORGE_VERSION}-installer.jar https://maven.minecraftforge.net/net/minecraftforge/forge/$FORGE_VERSION/forge-$FORGE_VERSION-installer.jar
 	java -jar forge-${FORGE_VERSION}-installer.jar --installServer
 fi
-if [[ -n "$LEVEL" ]]; then
-    sed -i "/level-name\s*=/ c level-name=$LEVEL" /data/server.properties
-fi
+
 if [[ -n "$JVM_OPTS" ]]; then
 	sed -i '/-Xm[s,x]/d' user_jvm_args.txt
 	for j in ${JVM_OPTS}; do sed -i '$a\'$j'' user_jvm_args.txt; done
