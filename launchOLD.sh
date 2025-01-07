@@ -2,15 +2,8 @@
 
 set -x
 
-if ! [[ -w "/data" ]]; then
-  echo "Directory is not writable, check permissions for /mnt/user/appdata/vaulthunters3"
-  exit 66
-fi
-
 FORGE_VERSION=1.20.1-47.3.0
 SERVER_VERSION=5.0.2
-# https://maven.minecraftforge.net/net/minecraftforge/forge/1.18.2-40.1.61/forge-1.18.2-40.1.61-installer.jar
-
 cd /data
 
 if ! [[ "$EULA" = "false" ]]; then
@@ -20,12 +13,21 @@ else
 	exit 99
 fi
 
+if ! [[ -f "Server-Files-$SERVER_VERSION.zip" ]]; then
+	rm -fr config defaultconfigs kubejs mods packmenu Simple.zip forge*
+	curl -Lo "Server-Files-$SERVER_VERSION.zip" 'https://edge.forgecdn.net/files/6044/657/SkyFactory_5_Server_5.0.2.zip' || exit 9
+	unzip -u -o "Server-Files-$SERVER_VERSION.zip" -d /data
+	DIR_TEST=$(find . -type d -maxdepth 1 | tail -1 | sed 's/^.\{2\}//g')
+	if [[ $(find . -type d -maxdepth 1 | wc -l) -gt 1 ]]; then
+		cd "${DIR_TEST}"
+		find . -type d -exec chmod 777 {} +
+		mv -f * /data
+		cd /data
+		rm -fr "$DIR_TEST"
+	fi
 
-if ! [[ -f Server-Files-$SERVER_VERSION.zip ]]; then
-  rm -fr config mods defaultconfigs scripts forge-*.jar start.sh *Server.zip
-  curl -Lo Server-Files-$SERVER_VERSION.zip 'https://edge.forgecdn.net/files/6044/657/SkyFactory_5_Server_5.0.2.zip' && unzip -u -o Server-Files-$SERVER_VERSION.zip -d /data
-  curl -Lo forge-${FORGE_VERSION}-installer.jar 'https://maven.minecraftforge.net/net/minecraftforge/forge/'${FORGE_VERSION}'/forge-'${FORGE_VERSION}'-installer.jar'
-  java -jar forge-${FORGE_VERSION}-installer.jar --installServer && rm -f forge-${FORGE_VERSION}-installer.jar
+	curl -Lo forge-${FORGE_VERSION}-installer.jar https://maven.minecraftforge.net/net/minecraftforge/forge/$FORGE_VERSION/forge-$FORGE_VERSION-installer.jar
+	java -jar forge-${FORGE_VERSION}-installer.jar --installServer
 fi
 
 if [[ -n "$JVM_OPTS" ]]; then
@@ -89,4 +91,3 @@ sed -i 's/server-port.*/server-port=25565/g' server.properties
 chmod 755 run.sh
 
 ./run.sh
-
