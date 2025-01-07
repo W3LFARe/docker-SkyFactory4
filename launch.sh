@@ -25,8 +25,8 @@ if ! [[ -f "Server-Files-$SERVER_VERSION.zip" ]]; then
 		cd /data
 		rm -fr "$DIR_TEST"
 	fi
-	
-	curl -Lo forge-${FORGE_VERSION}-installer.jar https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.1-$FORGE_VERSION/forge-1.20.1-$FORGE_VERSION-installer.jar
+
+	curl -Lo forge-${FORGE_VERSION}-installer.jar https://maven.minecraftforge.net/net/minecraftforge/forge/$FORGE_VERSION/forge-$FORGE_VERSION-installer.jar
 	java -jar forge-${FORGE_VERSION}-installer.jar --installServer
 fi
 if [[ -n "$LEVEL" ]]; then
