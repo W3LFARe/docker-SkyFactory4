@@ -1,0 +1,66 @@
+name: Update Mod from CurseForge
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'  # Runs every 4 hours
+
+jobs:
+  update-mod:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install curseforge-api node-fetch
+
+      - name: Fetch latest server files
+        env:
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+        run: |
+          node -e "
+            const CurseForgeClient = require('curseforge-api');
+            const fetch = require('node-fetch');
+            const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
+            
+            client.getModFiles('skyfactory-5').then(files => {
+              // Filter for server files
+              const serverFiles = files.filter(file => file.fileName.includes('server'));
+              const latestServerFile = serverFiles[0]; // Assuming the first file is the latest
+              console.log('Latest Server File:', latestServerFile);
+
+              // Get the latest server version and download URL
+              const latestVersion = latestServerFile.fileDate;
+              const serverZipUrl = latestServerFile.downloadUrl;
+
+              // Read the launch.sh file
+              const fs = require('fs');
+              const launchScriptPath = './launch.sh';
+              let launchScript = fs.readFileSync(launchScriptPath, 'utf8');
+
+              // Update SERVER_VERSION and server.zip link
+              launchScript = launchScript.replace(/SERVER_VERSION=.*/, `SERVER_VERSION=${latestVersion}`);
+              launchScript = launchScript.replace(/https:\/\/edge\.forgecdn\.net\/files\/\d+\/\d+\/.*/, serverZipUrl);
+
+              // Write the updated launch.sh file
+              fs.writeFileSync(launchScriptPath, launchScript);
+              console.log('Updated launch.sh');
+            }).catch(console.error);
+          "
+
+      - name: Commit and push changes
+        env:
+          USER_NAME: ${{ secrets.USER_NAME }}
+          USER_EMAIL: ${{ secrets.USER_EMAIL }}
+        run: |
+          git config --global user.name $USER_NAME
+          git config --global user.email $USER_EMAIL
+          git add -A
+          git commit -m 'Update launch.sh with latest server file info'
+          git push
