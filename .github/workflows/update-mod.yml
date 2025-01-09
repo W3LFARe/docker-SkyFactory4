@@ -26,33 +26,40 @@ jobs:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
         run: |
           node -e "
-            const CurseForgeClient = require('curseforge-api');
+            const fs = require('fs');
             const fetch = require('node-fetch');
-            const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
-            
-            client.getModFiles('skyfactory-5').then(files => {
-              // Filter for server files
-              const serverFiles = files.filter(file => file.fileName.includes('server'));
-              const latestServerFile = serverFiles[0]; // Assuming the first file is the latest
-              console.log('Latest Server File:', latestServerFile);
 
-              // Get the latest server version and download URL
-              const latestVersion = latestServerFile.fileDate;
-              const serverZipUrl = latestServerFile.downloadUrl;
+            (async () => {
+              const { default: CurseForgeClient } = await import('curseforge-api');
+              const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
 
-              // Read the launch.sh file
-              const fs = require('fs');
-              const launchScriptPath = './launch.sh';
-              let launchScript = fs.readFileSync(launchScriptPath, 'utf8');
+              try {
+                const files = await client.getModFiles('skyfactory-5');
 
-              // Update SERVER_VERSION and server.zip link
-              launchScript = launchScript.replace(/SERVER_VERSION=.*/, `SERVER_VERSION=${latestVersion}`);
-              launchScript = launchScript.replace(/https:\/\/edge\.forgecdn\.net\/files\/\d+\/\d+\/.*/, serverZipUrl);
+                // Filter for server files
+                const serverFiles = files.filter(file => file.fileName.includes('server'));
+                const latestServerFile = serverFiles[0]; // Assuming the first file is the latest
+                console.log('Latest Server File:', latestServerFile);
 
-              // Write the updated launch.sh file
-              fs.writeFileSync(launchScriptPath, launchScript);
-              console.log('Updated launch.sh');
-            }).catch(console.error);
+                // Get the latest server version and download URL
+                const latestVersion = latestServerFile.fileDate;
+                const serverZipUrl = latestServerFile.downloadUrl;
+
+                // Read the launch.sh file
+                const launchScriptPath = './launch.sh';
+                let launchScript = fs.readFileSync(launchScriptPath, 'utf8');
+
+                // Update SERVER_VERSION and server.zip link
+                launchScript = launchScript.replace(/SERVER_VERSION=.*/, `SERVER_VERSION=${latestVersion}`);
+                launchScript = launchScript.replace(/https:\/\/edge\.forgecdn\.net\/files\/\d+\/\d+\/.*/, serverZipUrl);
+
+                // Write the updated launch.sh file
+                fs.writeFileSync(launchScriptPath, launchScript);
+                console.log('Updated launch.sh');
+              } catch (error) {
+                console.error(error);
+              }
+            })();
           "
 
       - name: Commit and push changes
