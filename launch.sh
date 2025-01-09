@@ -8,7 +8,7 @@ if ! [[ -w "/data" ]]; then
 fi
 
 FORGE_VERSION=1.20.1-47.3.0
-SERVER_VERSION=5.0.2
+SERVER_VERSION=5.0.4
 # https://maven.minecraftforge.net/net/minecraftforge/forge/1.18.2-40.1.61/forge-1.18.2-40.1.61-installer.jar
 
 cd /data
@@ -23,7 +23,7 @@ fi
 
 if ! [[ -f Server-Files-$SERVER_VERSION.zip ]]; then
   rm -fr config mods defaultconfigs scripts forge-*.jar start.sh *Server.zip
-  curl -Lo Server-Files-$SERVER_VERSION.zip 'https://edge.forgecdn.net/files/6044/657/SkyFactory_5_Server_5.0.2.zip' && unzip -u -o Server-Files-$SERVER_VERSION.zip -d /data
+  curl -Lo Server-Files-$SERVER_VERSION.zip 'https://edge.forgecdn.net/files/6064/686/SkyFactory_5_Server_5.0.4.zip' && unzip -u -o Server-Files-$SERVER_VERSION.zip -d /data
   curl -Lo forge-${FORGE_VERSION}-installer.jar 'https://maven.minecraftforge.net/net/minecraftforge/forge/'${FORGE_VERSION}'/forge-'${FORGE_VERSION}'-installer.jar'
   java -jar forge-${FORGE_VERSION}-installer.jar --installServer && rm -f forge-${FORGE_VERSION}-installer.jar
 fi

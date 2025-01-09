@@ -2,10 +2,10 @@
 
 FROM openjdk:21-buster
 
-LABEL version="5.0.2"
+LABEL version="5.0.4"
 
-RUN apt-get update && apt-get install -y curl unzip && \
- adduser --uid 99 --gid 100 --home /data --disabled-password minecraft
+RUN apt-get update && apt-get install -y curl unzip jq && \
+    adduser --uid 99 --gid 100 --home /data --disabled-password minecraft
 
 COPY launch.sh /launch.sh
 RUN chmod +x /launch.sh
