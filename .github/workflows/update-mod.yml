@@ -3,6 +3,7 @@ name: Update Mod from CurseForge
 on:
   schedule:
     - cron: '0 */4 * * *'  # Runs every 4 hours
+  workflow_dispatch:  # Enables manual triggering
 
 jobs:
   update-mod:
