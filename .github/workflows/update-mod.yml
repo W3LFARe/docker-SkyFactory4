@@ -26,10 +26,9 @@ jobs:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
         run: |
           node -e "
-            const fs = require('fs');
-            const fetch = require('node-fetch');
-
             (async () => {
+              const fs = await import('fs');
+              const fetch = (await import('node-fetch')).default;
               const { default: CurseForgeClient } = await import('curseforge-api');
               const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
 
