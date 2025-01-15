@@ -6,13 +6,22 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
 
 (async () => {
   try {
-    const modId = '333413'; // Use the actual numeric mod ID here
-    const files = await client.getModFiles(modId);
-    console.log('Fetched files:', files); // Log the files to see what it contains
+    const modId = '333413'; // Replace with the actual numeric mod ID if different
+    const response = await client.getModFiles(modId);
+    console.log('API Response:', response); // Log the entire response to debug
+
+    // Extract the files from the response data
+    const files = response.data;
+    console.log('Fetched files:', files);
 
     // Check if files is an array
     if (!Array.isArray(files)) {
       throw new Error('Expected files to be an array, but received: ' + typeof files);
+    }
+
+    // Check if any files are returned
+    if (files.length === 0) {
+      throw new Error('No files found for the specified mod ID.');
     }
 
     // Filter for server files
