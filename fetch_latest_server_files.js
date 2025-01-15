@@ -37,7 +37,7 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     }
 
     // Get the latest server version and download URL
-    const latestVersion = latestServerFile.fileName.replace('.zip', ''); // Use the file name without the .zip extension
+    const latestVersion = latestServerFile.fileName.match(/SkyFactory[^\d]*(\d+\.\d+\.\d+)/)[1]; // Extract version number from file name
     const serverZipUrl = latestServerFile.downloadUrl;
     console.log('Latest Version:', latestVersion);
     console.log('Server Zip URL:', serverZipUrl);
@@ -47,9 +47,9 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     let launchScript = fs.readFileSync(launchScriptPath, 'utf8');
     console.log('Original launch.sh:', launchScript);
 
-    // Update SERVER_VERSION and server.zip link
-    launchScript = launchScript.replace(/SERVER_VERSION=.*/, `SERVER_VERSION=${latestVersion}`);
-    launchScript = launchScript.replace(/https:\/\/edge\.forgecdn\.net\/files\/\d+\/\d+\/.*/, serverZipUrl);
+    // Update placeholders with actual values
+    launchScript = launchScript.replace('{{SERVER_VERSION}}', latestVersion);
+    launchScript = launchScript.replace('{{SERVER_ZIP_URL}}', serverZipUrl);
 
     // Write the updated launch.sh file
     fs.writeFileSync(launchScriptPath, launchScript);
