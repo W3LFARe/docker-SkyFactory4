@@ -1,7 +1,7 @@
 // fetch_latest_server_files.js
 import fs from 'fs';
 import fetch from 'node-fetch';
-import CurseForgeClient from 'curseforge-api';
+import { CurseForgeClient } from 'curseforge-api';
 
 const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
 
