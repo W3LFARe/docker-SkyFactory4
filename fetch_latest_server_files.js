@@ -39,8 +39,10 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     // Get the latest server version and download URL
     const latestVersion = latestServerFile.fileName.replace('.zip', ''); // Use the file name without the .zip extension
     const serverZipUrl = latestServerFile.downloadUrl;
+    const serverPackFileId = latestServerFile.id; // Get the serverPackFileId
     console.log('Latest Version:', latestVersion);
     console.log('Server Zip URL:', serverZipUrl);
+    console.log('Server Pack File ID:', serverPackFileId);
 
     // Read the launch.sh file
     const launchScriptPath = './launch.sh';
