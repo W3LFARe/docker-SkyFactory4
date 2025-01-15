@@ -2,7 +2,7 @@
 
 FROM openjdk:21-buster
 
-LABEL version="5.0.4"
+LABEL version="Tue Jan 14 2025 04:59:56 GMT+0000 (Coordinated Universal Time)"
 
 RUN apt-get update && apt-get install -y curl unzip jq && \
     adduser --uid 99 --gid 100 --home /data --disabled-password minecraft
