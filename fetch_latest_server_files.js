@@ -33,7 +33,7 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     }
 
     // Get the latest server version and download URL
-    const latestVersion = latestServerFile.fileDate;
+    const latestVersion = latestServerFile.fileName.replace('.zip', ''); // Use the file name without the .zip extension
     const serverZipUrl = latestServerFile.downloadUrl;
     console.log('Latest Version:', latestVersion);
     console.log('Server Zip URL:', serverZipUrl);
