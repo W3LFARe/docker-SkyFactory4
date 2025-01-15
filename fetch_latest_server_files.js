@@ -24,25 +24,23 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
       throw new Error('No files found for the specified mod ID.');
     }
 
-    // Filter for server files (assuming server files have 'Server' in their displayName)
-    const serverFiles = files.filter(file => file.displayName.toLowerCase().includes('server'));
-    console.log('Filtered Server Files:', serverFiles);
+    // Filter for server pack files using serverPackFileId
+    const serverFiles = files.filter(file => file.serverPackFileId);
+    console.log('Filtered Server Pack Files:', serverFiles);
 
     // Sort the server files by date to get the latest one
     const latestServerFile = serverFiles.sort((a, b) => new Date(b.fileDate) - new Date(a.fileDate))[0];
     console.log('Latest Server File:', latestServerFile);
 
     if (!latestServerFile) {
-      throw new Error('No server files found.');
+      throw new Error('No server pack files found.');
     }
 
     // Get the latest server version and download URL
     const latestVersion = latestServerFile.fileName.replace('.zip', ''); // Use the file name without the .zip extension
     const serverZipUrl = latestServerFile.downloadUrl;
-    const serverPackFileId = latestServerFile.id; // Get the serverPackFileId
     console.log('Latest Version:', latestVersion);
     console.log('Server Zip URL:', serverZipUrl);
-    console.log('Server Pack File ID:', serverPackFileId);
 
     // Read the launch.sh file
     const launchScriptPath = './launch.sh';
