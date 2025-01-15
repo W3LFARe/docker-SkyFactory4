@@ -24,8 +24,12 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
       throw new Error('No files found for the specified mod ID.');
     }
 
-    // Sort the files by date to get the latest one
-    const latestServerFile = files.sort((a, b) => new Date(b.fileDate) - new Date(a.fileDate))[0];
+    // Filter for server files (assuming server files have 'Server' in their displayName)
+    const serverFiles = files.filter(file => file.displayName.toLowerCase().includes('server'));
+    console.log('Filtered Server Files:', serverFiles);
+
+    // Sort the server files by date to get the latest one
+    const latestServerFile = serverFiles.sort((a, b) => new Date(b.fileDate) - new Date(a.fileDate))[0];
     console.log('Latest Server File:', latestServerFile);
 
     if (!latestServerFile) {
