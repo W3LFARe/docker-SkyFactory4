@@ -1,4 +1,3 @@
-// fetch_latest_server_files.js
 import fs from 'fs';
 import fetch from 'node-fetch';
 import { CurseForgeClient } from 'curseforge-api';
@@ -7,7 +6,8 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
 
 (async () => {
   try {
-    const files = await client.getModFiles('skyfactory-5');
+    const modId = '333413'; // Use the actual numeric mod ID here
+    const files = await client.getModFiles(modId);
     // Filter for server files
     const serverFiles = files.filter(file => file.fileName.includes('server'));
     const latestServerFile = serverFiles[0]; // Assuming the first file is the latest
