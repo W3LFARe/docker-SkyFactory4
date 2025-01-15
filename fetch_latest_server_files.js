@@ -48,4 +48,31 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     console.log('Server Zip URL:', serverZipUrl);
 
     // Read the launch.sh file
-    const launch
+    const launchScriptPath = './launch.sh';
+    let launchScript = fs.readFileSync(launchScriptPath, 'utf8');
+    console.log('Original launch.sh:', launchScript);
+
+    // Update placeholders with actual values
+    launchScript = launchScript.replace('{{SERVER_VERSION}}', latestVersion);
+    launchScript = launchScript.replace('{{SERVER_ZIP_URL}}', serverZipUrl);
+
+    // Write the updated launch.sh file
+    fs.writeFileSync(launchScriptPath, launchScript);
+    console.log('Updated launch.sh:', launchScript);
+
+    // Read the Dockerfile
+    const dockerfilePath = './Dockerfile';
+    let dockerfile = fs.readFileSync(dockerfilePath, 'utf8');
+    console.log('Original Dockerfile:', dockerfile);
+
+    // Update relevant parts of the Dockerfile
+    dockerfile = dockerfile.replace(/LABEL version=".*"/, `LABEL version="${latestVersion}"`);
+
+    // Write the updated Dockerfile
+    fs.writeFileSync(dockerfilePath, dockerfile);
+    console.log('Updated Dockerfile:', dockerfile);
+  } catch (error) {
+    console.error('Error:', error.message);
+    console.error('Stack Trace:', error.stack);
+  }
+})();
