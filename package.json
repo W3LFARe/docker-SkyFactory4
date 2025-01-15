@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "dependencies": {
     "curseforge-api": "^1.3.0",
     "node-fetch": "^3.3.2"
