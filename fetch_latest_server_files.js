@@ -8,6 +8,13 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
   try {
     const modId = '333413'; // Use the actual numeric mod ID here
     const files = await client.getModFiles(modId);
+    console.log('Fetched files:', files); // Log the files to see what it contains
+
+    // Check if files is an array
+    if (!Array.isArray(files)) {
+      throw new Error('Expected files to be an array, but received: ' + typeof files);
+    }
+
     // Filter for server files
     const serverFiles = files.filter(file => file.fileName.includes('server'));
     const latestServerFile = serverFiles[0]; // Assuming the first file is the latest
