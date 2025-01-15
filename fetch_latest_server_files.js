@@ -7,29 +7,42 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
 (async () => {
   try {
     const modId = '392141'; // Correct mod ID for SkyFactory 5
-    const response = await client.getModFiles(modId, { pageSize: 1, index: 0, sortField: 'date', sortOrder: 'desc' });
+    const response = await client.getModFiles(modId, { pageSize: 50, index: 0, sortField: 'date', sortOrder: 'desc' });
     console.log('API Response:', response); // Log the entire response to debug
 
-    // Extract the file from the response data
-    const file = response.data[0];
-    console.log('Fetched file:', file);
+    // Extract the files from the response data
+    const files = response.data;
+    console.log('Fetched files:', files);
 
-    if (!file) {
-      throw new Error('No file found for the specified mod ID.');
+    // Check if files is an array
+    if (!Array.isArray(files)) {
+      throw new Error('Expected files to be an array, but received: ' + typeof files);
     }
 
-    // Get the server pack file if available
-    if (!file.serverPackFileId) {
-      throw new Error('No server pack file found.');
+    // Check if any files are returned
+    if (files.length === 0) {
+      throw new Error('No files found for the specified mod ID.');
+    }
+
+    // Filter for server pack files using serverPackFileId and fileName
+    const serverFiles = files.filter(file => file.fileName.toLowerCase().includes('server'));
+    console.log('Filtered Server Pack Files:', serverFiles);
+
+    // Sort the server files by date to get the latest one
+    const latestServerFile = serverFiles.sort((a, b) => new Date(b.fileDate) - new Date(a.fileDate))[0];
+    console.log('Latest Server File:', latestServerFile);
+
+    if (!latestServerFile) {
+      throw new Error('No server pack files found.');
     }
 
     // Get the latest server version and download URL
-    const versionMatch = file.fileName.match(/(\d+\.\d+\.\d+)/);
+    const versionMatch = latestServerFile.fileName.match(/(\d+\.\d+\.\d+)/);
     if (!versionMatch) {
       throw new Error('Could not extract version number from file name.');
     }
     const latestVersion = versionMatch[1]; // Extracted version number
-    const serverZipUrl = file.downloadUrl;
+    const serverZipUrl = latestServerFile.downloadUrl;
     console.log('Latest Version:', latestVersion);
     console.log('Server Zip URL:', serverZipUrl);
 
