@@ -50,10 +50,11 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     // Update placeholders with actual values
     launchScript = launchScript.replace('{{SERVER_VERSION}}', latestVersion);
     launchScript = launchScript.replace('{{SERVER_ZIP_URL}}', serverZipUrl);
+    console.log('Updated launch.sh:', launchScript);
 
     // Write the updated launch.sh file
     fs.writeFileSync(launchScriptPath, launchScript);
-    console.log('Updated launch.sh:', launchScript);
+    console.log('Updated launch.sh saved.');
 
     // Read the Dockerfile
     const dockerfilePath = './Dockerfile';
@@ -62,10 +63,23 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
 
     // Update relevant parts of the Dockerfile
     dockerfile = dockerfile.replace(/LABEL version=".*"/, `LABEL version="${latestVersion}"`);
+    console.log('Updated Dockerfile:', dockerfile);
 
     // Write the updated Dockerfile
     fs.writeFileSync(dockerfilePath, dockerfile);
-    console.log('Updated Dockerfile:', dockerfile);
+    console.log('Updated Dockerfile saved.');
+
+    // Add, commit, and push changes if there are any
+    const { execSync } = require('child_process');
+    execSync('git add -A');
+    const commitMessage = `Update launch.sh and Dockerfile with latest server file info: ${latestVersion}`;
+    try {
+      execSync(`git commit -m '${commitMessage}'`);
+      execSync('git push');
+      console.log('Changes committed and pushed.');
+    } catch (err) {
+      console.log('No changes to commit.');
+    }
   } catch (error) {
     console.error('Error:', error.message);
     console.error('Stack Trace:', error.stack);
