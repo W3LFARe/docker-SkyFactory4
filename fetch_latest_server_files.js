@@ -25,7 +25,7 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     }
 
     // Filter for server pack files using serverPackFileId and fileName
-    const serverFiles = files.filter(file => file.fileName.toLowerCase().includes('server'));
+    const serverFiles = files.filter(file => file.serverPackFileId);
     console.log('Filtered Server Pack Files:', serverFiles);
 
     // Sort the server files by date to get the latest one
@@ -42,7 +42,7 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
       throw new Error('Could not extract version number from file name.');
     }
     const latestVersion = versionMatch[1]; // Extracted version number
-    const serverZipUrl = latestServerFile.downloadUrl;
+    const serverZipUrl = `https://edge.forgecdn.net/files/${latestServerFile.alternateFileId}/SkyFactory_5_Server_${latestVersion}.zip`;
     console.log('Latest Version:', latestVersion);
     console.log('Server Zip URL:', serverZipUrl);
 
