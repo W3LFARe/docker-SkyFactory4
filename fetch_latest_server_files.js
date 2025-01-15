@@ -6,7 +6,7 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
 
 (async () => {
   try {
-    const modId = '333413'; // Replace with the actual numeric mod ID if different
+    const modId = '392141'; // Correct mod ID for SkyFactory 5
     const response = await client.getModFiles(modId);
     console.log('API Response:', response); // Log the entire response to debug
 
@@ -54,6 +54,7 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     fs.writeFileSync(dockerfilePath, dockerfile);
     console.log('Updated Dockerfile:', dockerfile);
   } catch (error) {
-    console.error(error);
+    console.error('Error:', error.message);
+    console.error('Stack Trace:', error.stack);
   }
 })();
