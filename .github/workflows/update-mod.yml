@@ -20,7 +20,7 @@ jobs:
 
       - name: Create package.json
         run: |
-          echo '{}' > package.json
+          echo '{"type": "module"}' > package.json  # Add "type": "module"
 
       - name: Install dependencies
         run: npm install curseforge-api node-fetch
@@ -30,11 +30,13 @@ jobs:
           CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
         run: |
           node -e "
+            import fs from 'fs';
+            import fetch from 'node-fetch';
+            import CurseForgeClient from 'curseforge-api';
+
+            const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
+
             (async () => {
-              const fs = require('fs');
-              const fetch = require('node-fetch').default;
-              const { default: CurseForgeClient } = require('curseforge-api');
-              const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
               try {
                 const files = await client.getModFiles('skyfactory-5');
                 // Filter for server files
