@@ -8,7 +8,7 @@ if ! [[ -w "/data" ]]; then
 fi
 
 FORGE_VERSION=1.20.1-47.3.0
-SERVER_VERSION=Tue Jan 14 2025 04:59:56 GMT+0000 (Coordinated Universal Time)
+SERVER_VERSION=SkyFactory5-5.0.5
 # https://maven.minecraftforge.net/net/minecraftforge/forge/1.18.2-40.1.61/forge-1.18.2-40.1.61-installer.jar
 
 cd /data
