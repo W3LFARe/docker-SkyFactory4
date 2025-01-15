@@ -30,7 +30,7 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     }
     const latestVersion = versionMatch[1]; // Extracted version number
     const serverPackFileId = file.alternateFileId.toString(); // Use alternateFileId
-    const serverZipUrl = `https://edge.forgecdn.net/files/${serverPackFileId.slice(0, 4)}/${serverPackFileId.slice(4, 7)}/${serverPackFileId}/SkyFactory_5_Server_${latestVersion}.zip`;
+    const serverZipUrl = `https://edge.forgecdn.net/files/${serverPackFileId.slice(0, 4)}/${serverPackFileId.slice(4, 7)}/SkyFactory_5_Server_${latestVersion}.zip`;
     console.log('Latest Version:', latestVersion);
     console.log('Server Zip URL:', serverZipUrl);
 
