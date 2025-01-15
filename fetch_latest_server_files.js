@@ -24,8 +24,8 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
       throw new Error('No files found for the specified mod ID.');
     }
 
-    // Filter for server pack files using serverPackFileId and fileName
-    const serverFiles = files.filter(file => file.serverPackFileId);
+    // Filter for server pack files using alternateFileId
+    const serverFiles = files.filter(file => file.alternateFileId);
     console.log('Filtered Server Pack Files:', serverFiles);
 
     // Sort the server files by date to get the latest one
@@ -42,7 +42,8 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
       throw new Error('Could not extract version number from file name.');
     }
     const latestVersion = versionMatch[1]; // Extracted version number
-    const serverZipUrl = `https://edge.forgecdn.net/files/${latestServerFile.alternateFileId}/SkyFactory_5_Server_${latestVersion}.zip`;
+    const serverPackFileId = latestServerFile.alternateFileId.toString(); // Convert to string for manipulation
+    const serverZipUrl = `https://edge.forgecdn.net/files/${serverPackFileId.slice(0, 4)}/${serverPackFileId.slice(4, 7)}/${serverPackFileId}/SkyFactory_5_Server_${latestVersion}.zip`;
     console.log('Latest Version:', latestVersion);
     console.log('Server Zip URL:', serverZipUrl);
 
@@ -68,10 +69,4 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     dockerfile = dockerfile.replace(/LABEL version=".*"/, `LABEL version="${latestVersion}"`);
 
     // Write the updated Dockerfile
-    fs.writeFileSync(dockerfilePath, dockerfile);
-    console.log('Updated Dockerfile:', dockerfile);
-  } catch (error) {
-    console.error('Error:', error.message);
-    console.error('Stack Trace:', error.stack);
-  }
-})();
+    fs.writeFileSync(dockerfile
