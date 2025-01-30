@@ -21,9 +21,9 @@ jobs:
       - name: Create package.json
         run: |
           echo '{"type": "module"}' > package.json  # Add "type": "module"
-
+      
       - name: Install dependencies
-        run: npm install curseforge-api node-fetch
+        run: npm install curseforge-api node-fetch zip-lib
 
       - name: Fetch latest server files
         env:
