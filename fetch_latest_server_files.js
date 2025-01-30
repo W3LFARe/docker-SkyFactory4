@@ -43,8 +43,8 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     console.log('Original launch.sh:', launchScript);
 
     // Replace placeholders in the script with the latest version values
-    launchScript = launchScript.replace(/FORGE_VERSION=\d+\.\d+\.\d+-\d+\.\d+\.\d+|FORGE_VERSION=0/, `FORGE_VERSION=${newForgeVersion}`);
-    launchScript = launchScript.replace(/SERVER_VERSION=\d+\.\d+\.\d+|SERVER_VERSION=0/, `SERVER_VERSION=${latestVersion}`);
+    launchScript = launchScript.replace(/FORGE_VERSION=\d+\.\d+\.\d+-\d+\.\d+\.\d+|FORGE_VERSION=/, `FORGE_VERSION=${newForgeVersion}`);
+    launchScript = launchScript.replace(/SERVER_VERSION=\d+\.\d+\.\d+|SERVER_VERSION=/, `SERVER_VERSION=${latestVersion}`);
     launchScript = launchScript.replace(/https:\/\/edge\.forgecdn\.net\/files\/\d+\/\d+\/SkyFactory_5_Server_\d+\.\d+\.\d+\.zip/, serverZipUrl);
 
     // Write the updated launch.sh file
