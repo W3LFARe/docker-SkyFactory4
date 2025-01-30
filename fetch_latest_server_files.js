@@ -60,8 +60,9 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     const currentForgeVersion = forgeVersionMatch ? forgeVersionMatch[1] : '0';
 
     // Update SERVER_VERSION and SERVER_ZIP_URL placeholders
-    launchScript = launchScript.replace(/SERVER_VERSION=\d+\.\d+\.\d+/, `SERVER_VERSION=${latestVersion}`);
-    launchScript = launchScript.replace(/SERVER_ZIP_URL=".*"/, `SERVER_ZIP_URL="${serverZipUrl}"`);
+    launchScript = launchScript.replace(/SERVER_VERSION=0/, `SERVER_VERSION=${latestVersion}`);
+    launchScript = launchScript.replace(/FORGE_VERSION=0/, `FORGE_VERSION=${newForgeVersion}`);
+    launchScript = launchScript.replace(/https:\/\/edge\.forgecdn\.net\/files\/\d+\/\d+\/SkyFactory_5_Server_\d+\.\d+\.\d+\.zip/, serverZipUrl);
 
     // Update FORGE_VERSION if the current version is older
     if (compareVersions(currentForgeVersion, newForgeVersion) < 0) {
