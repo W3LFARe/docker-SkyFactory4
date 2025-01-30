@@ -10,7 +10,7 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     const response = await client.getModFiles(modId, { pageSize: 1, index: 0, sortField: 'date', sortOrder: 'desc' });
     console.log('API Response:', response); // Log the entire response to debug
 
-    // Extract the file from the response data
+    // Extract the file from the response data 
     const file = response.data[0];
     console.log('Fetched file:', file);
 

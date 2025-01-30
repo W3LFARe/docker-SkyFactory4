@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -x
 if ! [[ -w "/data" ]]; then
   echo "Directory is not writable, check permissions for /mnt/user/appdata/vaulthunters3"
