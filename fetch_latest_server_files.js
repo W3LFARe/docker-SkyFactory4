@@ -1,6 +1,7 @@
 import fs from 'fs';
 import fetch from 'node-fetch';
 import { CurseForgeClient } from 'curseforge-api';
+import { extract } from 'zip-lib';
 
 const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
 
@@ -34,8 +35,34 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     console.log('Latest Version:', latestVersion);
     console.log('Server Zip URL:', serverZipUrl);
 
-    // Define the new Forge version
-    const newForgeVersion = '1.20.1-47.3.0';
+    // Download and extract the server ZIP file
+    const zipResponse = await fetch(serverZipUrl);
+    const zipBuffer = await zipResponse.buffer();
+
+    const zipFilePath = './server.zip';
+    fs.writeFileSync(zipFilePath, zipBuffer);
+    console.log('ZIP file downloaded successfully.');
+
+    const extractPath = './server_files';
+    await extract(zipFilePath, extractPath);
+    console.log('ZIP file extracted successfully.');
+
+    // Find the forge installer file and extract the version number
+    const files = fs.readdirSync(extractPath);
+    console.log('Extracted files:', files);
+
+    const forgeInstallerFile = files.find(file => file.match(/forge-\d+\.\d+\.\d+-\d+\.\d+\.\d+-installer\.jar/));
+    if (!forgeInstallerFile) {
+      throw new Error('Forge installer file not found.');
+    }
+
+    const versionMatchForge = forgeInstallerFile.match(/forge-(\d+\.\d+\.\d+-\d+\.\d+\.\d+)-installer\.jar/);
+    if (!versionMatchForge) {
+      throw new Error('Could not extract version number from the forge installer file.');
+    }
+
+    const newForgeVersion = versionMatchForge[1]; // Extracted version number
+    console.log('New Forge Version:', newForgeVersion);
 
     // Read the launch.sh file
     const launchScriptPath = './launch.sh';
