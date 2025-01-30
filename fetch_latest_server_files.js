@@ -39,13 +39,32 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     let launchScript = fs.readFileSync(launchScriptPath, 'utf8');
     console.log('Original launch.sh:', launchScript);
 
-    // Update placeholders with actual values
+    // Helper function to compare versions
+    const compareVersions = (v1, v2) => {
+      const v1Parts = v1.split('.').map(Number);
+      const v2Parts = v2.split('.').map(Number);
+      for (let i = 0; i < Math.max(v1Parts.length, v2Parts.length); i++) {
+        const a = v1Parts[i] || 0;
+        const b = v2Parts[i] || 0;
+        if (a > b) return 1;
+        if (a < b) return -1;
+      }
+      return 0;
+    };
+
+    // Get the current FORGE_VERSION from the launch script
+    const forgeVersionMatch = launchScript.match(/FORGE_VERSION=(\d+\.\d+\.\d+-\d+\.\d+\.\d+)/);
+    const currentForgeVersion = forgeVersionMatch ? forgeVersionMatch[1] : '0';
+
+    // Update placeholders with actual values or retain them if not updating
     launchScript = launchScript.replace('{{SERVER_VERSION}}', latestVersion);
     launchScript = launchScript.replace('{{SERVER_ZIP_URL}}', serverZipUrl);
 
-    // Assuming FORGE_VERSION is fixed and needs to be set
-    const forgeVersion = '1.20.1-47.3.0';
-    launchScript = launchScript.replace('${{FORGE_VERSION}}', forgeVersion);
+    // Update FORGE_VERSION if the current version is older
+    const newForgeVersion = '1.20.1-47.3.0';
+    if (compareVersions(currentForgeVersion, newForgeVersion) < 0) {
+      launchScript = launchScript.replace(/FORGE_VERSION=\d+\.\d+\.\d+-\d+\.\d+\.\d+/, `FORGE_VERSION=${newForgeVersion}`);
+    }
 
     // Write the updated launch.sh file
     fs.writeFileSync(launchScriptPath, launchScript);
