@@ -5,8 +5,8 @@ if ! [[ -w "/data" ]]; then
   exit 66
 fi
 
-FORGE_VERSION=0
-SERVER_VERSION=0
+FORGE_VERSION=
+SERVER_VERSION=
 # https://maven.minecraftforge.net/net/minecraftforge/forge/1.18.2-40.1.61/forge-1.18.2-40.1.61-installer.jar
 
 cd /data

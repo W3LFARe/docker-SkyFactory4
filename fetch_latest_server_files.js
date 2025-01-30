@@ -34,40 +34,18 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     console.log('Latest Version:', latestVersion);
     console.log('Server Zip URL:', serverZipUrl);
 
+    // Define the new Forge version
+    const newForgeVersion = '1.20.1-47.3.0';
+
     // Read the launch.sh file
     const launchScriptPath = './launch.sh';
     let launchScript = fs.readFileSync(launchScriptPath, 'utf8');
     console.log('Original launch.sh:', launchScript);
 
-    // Helper function to compare versions
-    const compareVersions = (v1, v2) => {
-      const v1Parts = v1.split('.').map(Number);
-      const v2Parts = v2.split('.').map(Number);
-      for (let i = 0; i < Math.max(v1Parts.length, v2Parts.length); i++) {
-        const a = v1Parts[i] || 0;
-        const b = v2Parts[i] || 0;
-        if (a > b) return 1;
-        if (a < b) return -1;
-      }
-      return 0;
-    };
-
-    // Define the new Forge version
-    const newForgeVersion = '1.20.1-47.3.0';
-
-    // Get the current FORGE_VERSION from the launch script
-    const forgeVersionMatch = launchScript.match(/FORGE_VERSION=(\d+\.\d+\.\d+-\d+\.\d+\.\d+)/);
-    const currentForgeVersion = forgeVersionMatch ? forgeVersionMatch[1] : '0';
-
-    // Update SERVER_VERSION and SERVER_ZIP_URL placeholders
-    launchScript = launchScript.replace(/SERVER_VERSION=0/, `SERVER_VERSION=${latestVersion}`);
-    launchScript = launchScript.replace(/FORGE_VERSION=0/, `FORGE_VERSION=${newForgeVersion}`);
+    // Replace placeholders in the script with the latest version values
+    launchScript = launchScript.replace(/FORGE_VERSION=\d+\.\d+\.\d+-\d+\.\d+\.\d+|FORGE_VERSION=0/, `FORGE_VERSION=${newForgeVersion}`);
+    launchScript = launchScript.replace(/SERVER_VERSION=\d+\.\d+\.\d+|SERVER_VERSION=0/, `SERVER_VERSION=${latestVersion}`);
     launchScript = launchScript.replace(/https:\/\/edge\.forgecdn\.net\/files\/\d+\/\d+\/SkyFactory_5_Server_\d+\.\d+\.\d+\.zip/, serverZipUrl);
-
-    // Update FORGE_VERSION if the current version is older
-    if (compareVersions(currentForgeVersion, newForgeVersion) < 0) {
-      launchScript = launchScript.replace(/FORGE_VERSION=\d+\.\d+\.\d+-\d+\.\d+\.\d+/, `FORGE_VERSION=${newForgeVersion}`);
-    }
 
     // Write the updated launch.sh file
     fs.writeFileSync(launchScriptPath, launchScript);
