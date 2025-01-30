@@ -42,7 +42,10 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
     // Update placeholders with actual values
     launchScript = launchScript.replace('{{SERVER_VERSION}}', latestVersion);
     launchScript = launchScript.replace('{{SERVER_ZIP_URL}}', serverZipUrl);
-    console.log('Updated launch.sh with placeholders:', launchScript);
+
+    // Assuming FORGE_VERSION is fixed and needs to be set
+    const forgeVersion = '1.20.1-47.3.0';
+    launchScript = launchScript.replace('${{FORGE_VERSION}}', forgeVersion);
 
     // Write the updated launch.sh file
     fs.writeFileSync(launchScriptPath, launchScript);
