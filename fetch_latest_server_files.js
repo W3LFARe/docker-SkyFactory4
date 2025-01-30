@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import fetch from 'node-fetch';
 import { CurseForgeClient } from 'curseforge-api';
@@ -53,19 +52,17 @@ const client = new CurseForgeClient(process.env.CURSEFORGE_API_KEY, { fetch });
       return 0;
     };
 
-    // Get the current FORGE_VERSION from the launch script
-    const forgeVersionMatch = launchScript.match(/FORGE_VERSION=(\d+\.\d+\.\d+-\d+\.\d+\.\d+)/);
-    const currentForgeVersion = forgeVersionMatch ? forgeVersionMatch[1] : '0';
-
     // Define the new Forge version
     const newForgeVersion = '1.20.1-47.3.0';
 
-    // Update placeholders with actual values or retain them if not updating
-    launchScript = launchScript.replace('SERVER_VERSION=0', `SERVER_VERSION=${latestVersion}`);
-    launchScript = launchScript.replace('FORGE_VERSION=0', `FORGE_VERSION=${newForgeVersion}`);
-    launchScript = launchScript.replace('https://edge.forgecdn.net/files/6132/552/SkyFactory_5_Server_5.0.7.zip', serverZipUrl);
+    // Replace placeholders in the script with the latest version values
+    launchScript = launchScript.replace(/FORGE_VERSION=\d+\.\d+\.\d+-\d+\.\d+\.\d+/, `FORGE_VERSION=${newForgeVersion}`);
+    launchScript = launchScript.replace(/SERVER_VERSION=0/, `SERVER_VERSION=${latestVersion}`);
+    launchScript = launchScript.replace(/https:\/\/edge\.forgecdn\.net\/files\/\d+\/\d+\/SkyFactory_5_Server_\d+\.\d+\.\d+\.zip/, serverZipUrl);
 
     // Update FORGE_VERSION if the current version is older
+    const forgeVersionMatch = launchScript.match(/FORGE_VERSION=(\d+\.\d+\.\d+-\d+\.\d+\.\d+)/);
+    const currentForgeVersion = forgeVersionMatch ? forgeVersionMatch[1] : '0';
     if (compareVersions(currentForgeVersion, newForgeVersion) < 0) {
       launchScript = launchScript.replace(/FORGE_VERSION=\d+\.\d+\.\d+-\d+\.\d+\.\d+/, `FORGE_VERSION=${newForgeVersion}`);
     }
